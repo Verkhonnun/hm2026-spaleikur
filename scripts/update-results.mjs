@@ -19,8 +19,20 @@ const BOT = process.env.SUPABASE_BOT_TOKEN;
 
 const RIPE_MS = 95 * 60 * 1000; // leikur "tilbúinn" 95 mín eftir að flautað er til leiks
 
+// fetch með tímamörkum + einni endurtilraun — svo ein hangandi beiðni frysti ekki alla keyrsluna
+async function tfetch(url, opts = {}, tries = 2) {
+  for (let i = 1; ; i++) {
+    try {
+      return await fetch(url, { ...opts, signal: AbortSignal.timeout(20000) });
+    } catch (e) {
+      if (i >= tries) throw e;
+      await new Promise((r) => setTimeout(r, 1500));
+    }
+  }
+}
+
 async function sb(path) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+  const res = await tfetch(`${SUPABASE_URL}/rest/v1/${path}`, {
     headers: { apikey: ANON, Authorization: `Bearer ${ANON}` },
   });
   if (!res.ok) throw new Error(`${path} -> ${res.status} ${await res.text()}`);
@@ -28,7 +40,7 @@ async function sb(path) {
 }
 
 async function rpc(fn, body) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, {
+  const res = await tfetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, {
     method: "POST",
     headers: { apikey: ANON, Authorization: `Bearer ${ANON}`, "Content-Type": "application/json" },
     body: JSON.stringify(body),
@@ -38,7 +50,7 @@ async function rpc(fn, body) {
 
 async function fetchWikitext(page) {
   const url = `https://en.wikipedia.org/w/api.php?action=parse&page=${encodeURIComponent(page)}&prop=wikitext&format=json&formatversion=2&origin=*`;
-  const res = await fetch(url, { headers: { "User-Agent": "HM2026-Spaleikur/1.0 (Verkhonnun)" } });
+  const res = await tfetch(url, { headers: { "User-Agent": "HM2026-Spaleikur/1.0 (Verkhonnun)" } });
   if (!res.ok) throw new Error(`wiki ${page} -> ${res.status}`);
   return (await res.json())?.parse?.wikitext || "";
 }
