@@ -6,157 +6,63 @@
 <title>HM 2026 — Spáleikur Verkhönnunar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600&family=Archivo+Expanded:wght@600;700;800;900&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css" />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@500;600;700;800&display=swap" rel="stylesheet" />
 <style>
-  /* Fána-letur svo fánar birtist eins á öllum kerfum (Windows styður ekki fána-emoji) */
-  @font-face {
-    font-family: "Twemoji Country Flags";
-    unicode-range: U+1F1E6-1F1FF, U+1F3F4, U+E0061-E007F;
-    src: url("https://cdn.jsdelivr.net/npm/country-flag-emoji-polyfill@0.1.8/dist/TwemojiCountryFlags.woff2") format("woff2");
+  :root{
+    --bg:#060D0A;--bg2:#0A140F;--surface:#0F1C16;--line:rgba(0,255,128,.14);--line-soft:rgba(255,255,255,.06);
+    --accent:#00FF80;--glow:rgba(0,255,128,.30);--text:#EAF6EF;--dim:#A7BDB1;--muted:#6E857a;
+    --gold:#FFD24A;--silver:#CBD7D0;--bronze:#E0935A;
+    --disp:"Anton",sans-serif;--ui:"Archivo",system-ui,sans-serif;
   }
-
-  /* ─────────────── Tokens ─────────────── */
-  :root {
-    --accent: #00FF80;
-    --accent-ink: #04140C;          /* dökkur texti ofan á accent */
-    --accent-glow: rgba(0, 255, 128, 0.35);
-
-    --bg: #060D0A;
-    --bg-2: #0A140F;
-    --surface: #0F1C16;
-    --surface-2: #142a20;
-    --surface-3: #18342764;
-    --line: rgba(0, 255, 128, 0.13);
-    --line-soft: rgba(255, 255, 255, 0.07);
-
-    --text: #EAF6EF;
-    --text-dim: #A7BDB1;
-    --muted: #6E857a;
-
-    --live: #FF5247;
-    --gold: #FFD24A;
-    --silver: #CBD7D0;
-    --bronze: #E0935A;
-
-    --r-sm: 10px;
-    --r: 16px;
-    --r-lg: 22px;
-    --r-xl: 30px;
-
-    --font-display: "Twemoji Country Flags", "Anton", sans-serif;
-    --font-ui: "Twemoji Country Flags", "Archivo", sans-serif;
-    --shadow: 0 18px 50px -20px rgba(0,0,0,0.7);
-    --maxw: 1180px;
-  }
-
-  /* Þema-afbrigði í gegnum tweaks */
-  [data-theme="ink"] { --bg:#070A12; --bg-2:#0B0F1C; --surface:#101529; --surface-2:#1a2140; --line:rgba(120,150,255,.14); }
-  [data-theme="stadium"] { --bg:#0c0a06; --bg-2:#14110a; --surface:#1b1710; --surface-2:#2a2417; --line:rgba(255,210,74,.14); }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html, body { height: 100%; }
-  body {
-    font-family: var(--font-ui);
-    background: var(--bg);
-    color: var(--text);
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-    overflow-x: hidden;
-  }
-
-  /* Bakgrunnsstemning: grænn ljómi + völlur-rúður */
-  .bg-atmos {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background:
-      radial-gradient(120% 80% at 80% -10%, var(--accent-glow), transparent 55%),
-      radial-gradient(90% 70% at 0% 110%, rgba(0,255,128,0.10), transparent 60%);
-    opacity: .8;
-  }
-  .bg-grid {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .35;
-    background-image:
-      linear-gradient(var(--line-soft) 1px, transparent 1px),
-      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
-    background-size: 46px 46px;
-    -webkit-mask-image: radial-gradient(130% 100% at 50% 0%, #000 35%, transparent 80%);
-            mask-image: radial-gradient(130% 100% at 50% 0%, #000 35%, transparent 80%);
-  }
-
-  ::selection { background: var(--accent); color: var(--accent-ink); }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 10px; height: 10px; }
-  ::-webkit-scrollbar-thumb { background: var(--surface-2); border-radius: 99px; border: 2px solid var(--bg); }
-  ::-webkit-scrollbar-track { background: transparent; }
-
-  /* ─────────────── Typo helpers ─────────────── */
-  .display { font-family: var(--font-display); font-weight: 400; letter-spacing: .01em; line-height: .92; text-transform: uppercase; }
-  .num { font-family: var(--font-display); font-weight: 400; font-feature-settings: "tnum" 1; }
-  .eyebrow { font-size: 11px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
-
-  /* ─────────────── App layout ─────────────── */
-  #root { position: relative; z-index: 1; }
-
-  .app {
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: 260px 1fr;
-  }
-  .main-col { min-width: 0; }
-  .main-wrap { max-width: var(--maxw); margin: 0 auto; padding: 30px 34px 120px; }
-
-  @media (max-width: 880px) {
-    .app { grid-template-columns: 1fr; }
-    .main-wrap { padding: 18px 16px 110px; }
-  }
-
-  /* Focus ring */
-  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
-  input { font-family: inherit; }
-
-  /* Reusable card */
-  .card {
-    background: linear-gradient(180deg, var(--surface), var(--bg-2));
-    border: 1px solid var(--line);
-    border-radius: var(--r);
-    box-shadow: var(--shadow);
-  }
-
-  .anim-in { animation: rise .5s cubic-bezier(.2,.8,.2,1) both; }
-  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-  @media (prefers-reduced-motion: reduce) { .anim-in { animation: none; } }
-
-  .pop { animation: pop .28s cubic-bezier(.2,1.4,.4,1) both; }
-  @keyframes pop { from { transform: scale(.85); opacity:0; } to { transform: scale(1); opacity:1; } }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--text);font-family:var(--ui);-webkit-font-smoothing:antialiased;
+    min-height:100vh;display:grid;place-items:center;padding:28px;overflow-x:hidden}
+  .atmos{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(120% 80% at 82% -10%,var(--glow),transparent 55%),radial-gradient(90% 70% at 0% 110%,rgba(0,255,128,.08),transparent 60%);opacity:.85}
+  .grid{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.3;
+    background-image:linear-gradient(var(--line-soft) 1px,transparent 1px),linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);background-size:46px 46px;
+    -webkit-mask-image:radial-gradient(130% 100% at 50% 0%,#000 35%,transparent 82%);mask-image:radial-gradient(130% 100% at 50% 0%,#000 35%,transparent 82%)}
+  .card{position:relative;z-index:1;width:100%;max-width:560px;text-align:center;
+    background:linear-gradient(180deg,var(--surface),var(--bg2));border:1px solid var(--line);border-radius:26px;
+    padding:44px 34px 34px;box-shadow:0 30px 80px -30px #000}
+  .word{font-weight:800;font-size:20px;letter-spacing:-.01em}.word b{color:var(--accent)}
+  .eyebrow{margin-top:6px;font-size:11px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+  .trophy{font-size:52px;margin:22px 0 6px;line-height:1}
+  h1{font-family:var(--disp);font-weight:400;text-transform:uppercase;font-size:clamp(34px,7vw,52px);line-height:.95;letter-spacing:.01em}
+  .sub{color:var(--dim);font-weight:600;font-size:16px;line-height:1.55;margin:14px auto 0;max-width:44ch}
+  .champ{margin:26px 0 4px;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);padding:22px 0}
+  .champ .lab{font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+  .champ .nm{font-family:var(--disp);font-weight:400;text-transform:uppercase;font-size:clamp(24px,5vw,34px);margin-top:8px}
+  .champ .pts{font-family:var(--disp);font-size:20px;color:var(--accent);margin-top:2px}
+  .rest{display:flex;justify-content:center;gap:26px;flex-wrap:wrap;margin-top:18px}
+  .rest .r{font-size:14px;font-weight:700;color:var(--dim)}.rest .r b{font-family:var(--disp);font-weight:400;color:var(--text);margin-right:6px}
+  .rest .r .s{color:var(--muted);font-weight:800;margin-left:6px}
+  .foot{margin-top:26px;color:var(--muted);font-size:13px;font-weight:600;line-height:1.5}
+  .foot .accent{color:var(--accent)}
 </style>
 </head>
 <body>
-  <div class="bg-atmos"></div>
-  <div class="bg-grid"></div>
-  <div id="root"></div>
+  <div class="atmos"></div>
+  <div class="grid"></div>
+  <div class="card">
+    <div class="word"><b>◣</b> Verkhönnun</div>
+    <div class="eyebrow">Spáleikur · HM 2026</div>
+    <div class="trophy">🏆</div>
+    <h1>Leiknum<br>er lokið</h1>
+    <p class="sub">Takk fyrir frábæra keppni, öll sömul! Spánn varð heimsmeistari og spáleikurinn er genginn um garð.</p>
 
-  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <div class="champ">
+      <div class="lab">Sigurvegari spáleiksins</div>
+      <div class="nm gold">Birta María Róbertsdóttir</div>
+      <div class="pts">326 stig</div>
+    </div>
+    <div class="rest">
+      <div class="r"><b style="color:var(--silver)">2.</b> Sesselja <span class="s">310</span></div>
+      <div class="r"><b style="color:var(--bronze)">3.</b> Kristinn Gudjonsson <span class="s">309</span></div>
+    </div>
 
-  <!-- Tenging við Supabase-bakenda (opinber lykill — öruggt að birta) -->
-  <script>
-    window.SUPA_URL = "https://ahtmbbbazbqvxxjkvsma.supabase.co";
-    window.SUPA_KEY = "sb_publishable_ZYF3nOOQubnM7APtsNQkuw_lKj2ldHv";
-  </script>
-
-  <script type="text/babel" src="data.jsx"></script>
-  <script type="text/babel" src="tweaks-panel.jsx"></script>
-  <script type="text/babel" src="components.jsx"></script>
-  <script type="text/babel" src="predict.jsx"></script>
-  <script type="text/babel" src="screens.jsx"></script>
-  <script type="text/babel" src="auth.jsx"></script>
-  <script type="text/babel" src="admin.jsx"></script>
-  <script type="text/babel" src="app.jsx"></script>
+    <div class="foot">Spáleikurinn snýr aftur á <span class="accent">næsta stórmóti</span>. Sjáumst þá! ⚽</div>
+  </div>
 </body>
 </html>
